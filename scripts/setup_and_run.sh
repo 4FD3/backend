@@ -8,14 +8,14 @@ source ocrproj/bin/activate
 #python -m pip install --upgrade pip
 
 # Install Tesseract (for Ubuntu/Debian-based systems)
-apt-get install tesseract-ocr
+apt-get install tesseract-ocr -y
 
 # Install required libraries
 pip install fastapi uvicorn pytesseract opencv-python python-multipart
 
 
 # Run the FastAPI server
-uvicorn main:app  --host 0.0.0.0 --port 8000 --reload
+uvicorn main:app  --host 0.0.0.0 --port 80 --reload
 
 # Deactivate the virtual environment
 deactivate
