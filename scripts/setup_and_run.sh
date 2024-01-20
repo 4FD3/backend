@@ -5,10 +5,10 @@ python -m venv ocrproj
 source ocrproj/bin/activate
 
 #upgrade pip
-python -m pip install --upgrade pip
+#python -m pip install --upgrade pip
 
 # Install Tesseract (for Ubuntu/Debian-based systems)
-sudo apt-get install tesseract-ocr
+apt-get install tesseract-ocr
 
 # Install required libraries
 pip install fastapi uvicorn pytesseract opencv-python python-multipart
