@@ -33,7 +33,7 @@ http://localhost:3100/
 
 ### curl:
 
-curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/inspirational-quote.png" http://localhost:3100/process_receipt
+curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.png[/jpeg/jpg]" http://localhost:3100/process_receipt
 
 ### postman:
 
