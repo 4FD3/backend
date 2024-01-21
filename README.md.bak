@@ -27,5 +27,5 @@ apt-get install -y tesseract-ocr && apt-get install -y libgl1-mesa-glx
 
 ## Example call to access the application:
 
-http://localhost:3100/
+http://127.0.0.1:8000/
 
