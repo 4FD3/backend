@@ -1,8 +1,8 @@
 ---
 page_type: OCR
-description: "An OCR API that can be used to extract text information using the openCV and Tesseract"
-languages:
-- python
+description: "This application utilizes Docker for containerization, Python 3.10, and FastAPI for backend development. Gunicorn enhances performance, while OpenCV and Tesseract handle image processing and OCR tasks. Uvicorn serves as the ASGI server, and HTML/CSS with Jinja2 Templates form the user interface. The tech stack enables efficient receipt text extraction from images, making it a scalable and modern application."
+Tools/languages/libraries:
+- python, Docker, FastAPI, OpenCV, Tesseract, Uvicorn, Jinja2, HTML/CSS
 ---
 
 
