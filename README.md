@@ -25,7 +25,16 @@ apt-get install -y tesseract-ocr && apt-get install -y libgl1-mesa-glx
 
 `uvicorn main:app --reload`
 
-## Example call to access the application:
+## Example call to access the application on:
+
+### browser:
 
 http://localhost:3100/
 
+### curl:
+
+curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/inspirational-quote.png" http://localhost:3100/process_receipt
+
+### postman:
+
+![Alt text](image.png)
