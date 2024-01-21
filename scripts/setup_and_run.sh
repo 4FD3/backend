@@ -15,7 +15,7 @@ pip install fastapi uvicorn pytesseract opencv-python python-multipart
 
 
 # Run the FastAPI server
-uvicorn main:app  #--host 0.0.0.0 --port 80 --reload
+uvicorn main:app  --host 0.0.0.0 #--port 80 --reload
 
 # Deactivate the virtual environment
 deactivate
