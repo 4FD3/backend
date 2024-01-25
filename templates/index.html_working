@@ -7,10 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Highlight.js CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/monokai-sublime.min.css">
-
+    
     <style>
         body {
             background-color: #f8f9fa;
@@ -26,7 +23,6 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative; /* Relative positioning for the loading spinner */
         }
 
         label {
@@ -48,23 +44,12 @@
 
         /* Style for displaying JSON in a formatted way */
         .json-response {
-            background-color: black;
-            color: white;
             white-space: pre-wrap;
             overflow: auto;
             border: 1px solid #dee2e6;
             border-radius: 5px;
             padding: 10px;
             margin-top: 20px;
-        }
-
-        /* Style for the loading spinner */
-        .loading-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none; /* Initially hidden */
         }
     </style>
 </head>
@@ -79,14 +64,11 @@
                     <input type="file" id="file" name="file" class="form-control" accept="image/*" required>
                 </div>
 
-                <button type="button" id="uploadButton" class="btn btn-primary" onclick="submitForm()">Upload</button>
-
-                <!-- Loading spinner -->
-                <div id="loadingSpinner" class="loading-spinner"></div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Upload</button>
             </form>
 
-            <!-- Display JSON response in a formatted way with syntax highlighting -->
-            <div class="json-response hljs">
+            <!-- Display JSON response in a formatted way -->
+            <div class="json-response">
                 <p id="ocrResult"></p>
             </div>
         </div>
@@ -95,23 +77,9 @@
     <!-- Bootstrap JS and Popper.js (for Bootstrap components that require it) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Highlight.js -->
-    <script src="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2"></script>
-
-    <!-- Spin.js -->
-    <script src="https://cdn.jsdelivr.net/spinjs/2.3.2/spin.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function submitForm() {
-            // Disable the button
-            $('#uploadButton').prop('disabled', true);
-
-            // Display loading spinner
-            var target = document.getElementById('loadingSpinner');
-            var spinner = new Spinner().spin(target);
-            $('#loadingSpinner').show();
-
             var formData = new FormData($('#ocrForm')[0]);
 
             $.ajax({
@@ -121,27 +89,9 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    // Hide loading spinner
-                    spinner.stop();
-                    $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
-                    // Display formatted JSON with syntax highlighting
-                    $('#ocrResult').html('<strong>OCR Result:</strong><br><pre><code class="json">' + JSON.stringify(JSON.parse(data.ocr_response), null, 2) + '</code></pre>');
-
-                    // Apply syntax highlighting
-                    hljs.highlightAll();
+                    $('#ocrResult').html('<strong>OCR Result:</strong><br>' + data.ocr_response);
                 },
                 error: function(error) {
-                    // Hide loading spinner
-                    spinner.stop();
-                    $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
                     console.log(error);
                     $('#ocrResult').html('<p>Error processing the receipt.</p>');
                 }

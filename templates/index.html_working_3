@@ -79,7 +79,7 @@
                     <input type="file" id="file" name="file" class="form-control" accept="image/*" required>
                 </div>
 
-                <button type="button" id="uploadButton" class="btn btn-primary" onclick="submitForm()">Upload</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Upload</button>
 
                 <!-- Loading spinner -->
                 <div id="loadingSpinner" class="loading-spinner"></div>
@@ -104,12 +104,8 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function submitForm() {
-            // Disable the button
-            $('#uploadButton').prop('disabled', true);
-
             // Display loading spinner
-            var target = document.getElementById('loadingSpinner');
-            var spinner = new Spinner().spin(target);
+            var spinner = new Spinner().spin(document.getElementById('loadingSpinner'));
             $('#loadingSpinner').show();
 
             var formData = new FormData($('#ocrForm')[0]);
@@ -122,12 +118,8 @@
                 contentType: false,
                 success: function(data) {
                     // Hide loading spinner
-                    spinner.stop();
                     $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
+                    
                     // Display formatted JSON with syntax highlighting
                     $('#ocrResult').html('<strong>OCR Result:</strong><br><pre><code class="json">' + JSON.stringify(JSON.parse(data.ocr_response), null, 2) + '</code></pre>');
 
@@ -136,12 +128,8 @@
                 },
                 error: function(error) {
                     // Hide loading spinner
-                    spinner.stop();
                     $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
+                    
                     console.log(error);
                     $('#ocrResult').html('<p>Error processing the receipt.</p>');
                 }

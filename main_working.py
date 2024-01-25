@@ -21,13 +21,7 @@ os.makedirs(uploads_folder, exist_ok=True)
 # Serve static files (e.g., index.html) from the "static" directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.post("/process_receipt",
-    summary="Process Merchant Receipt's like Grocery's (like Walmart) or any other Retailers",
-    description="Endpoint to process a receipt using OCR and generate a JSON Response",
-    responses={
-        200: {"description": "Receipt processed successfully."},
-        422: {"description": "Invalid file format."},
-    })
+@app.post("/process_receipt")
 async def process_receipt(file: UploadFile = UploadFile(...)):
     try:
         image_path = os.path.join(uploads_folder, file.filename)
@@ -111,11 +105,8 @@ async def process_receipt(file: UploadFile = UploadFile(...)):
         }
 
         # Convert the result dictionary to a JSON object
-        result_json = json.dumps(result_dict, indent=1)
+        result_json = json.dumps(result_dict, indent=2)
         return JSONResponse(content={"ocr_response": result_json}, status_code=200)
-	#return FileResponse("templates/index.html", media_type="text/html", headers={"ocr_response": result_json})
-
-        #return JSONResponse(content={"ocr_response": result_json}, status_code=200)
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

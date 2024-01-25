@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt OCR Upload</title>
+</head>
+<body>
+    <!--  http://192.168.2.59:3100/process_receipt --> 	
+    <form action="https://ocr.ishananand.ca/process_receipt" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a Receipt from any Grocery/Retail store:</label>
+        <input type="file" id="file" name="file" accept="image/*">
+        <br>
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>

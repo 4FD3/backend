@@ -26,7 +26,6 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative; /* Relative positioning for the loading spinner */
         }
 
         label {
@@ -57,15 +56,6 @@
             padding: 10px;
             margin-top: 20px;
         }
-
-        /* Style for the loading spinner */
-        .loading-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none; /* Initially hidden */
-        }
     </style>
 </head>
 <body>
@@ -79,10 +69,7 @@
                     <input type="file" id="file" name="file" class="form-control" accept="image/*" required>
                 </div>
 
-                <button type="button" id="uploadButton" class="btn btn-primary" onclick="submitForm()">Upload</button>
-
-                <!-- Loading spinner -->
-                <div id="loadingSpinner" class="loading-spinner"></div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Upload</button>
             </form>
 
             <!-- Display JSON response in a formatted way with syntax highlighting -->
@@ -98,20 +85,9 @@
     <!-- Highlight.js -->
     <script src="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2"></script>
 
-    <!-- Spin.js -->
-    <script src="https://cdn.jsdelivr.net/spinjs/2.3.2/spin.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function submitForm() {
-            // Disable the button
-            $('#uploadButton').prop('disabled', true);
-
-            // Display loading spinner
-            var target = document.getElementById('loadingSpinner');
-            var spinner = new Spinner().spin(target);
-            $('#loadingSpinner').show();
-
             var formData = new FormData($('#ocrForm')[0]);
 
             $.ajax({
@@ -121,13 +97,6 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    // Hide loading spinner
-                    spinner.stop();
-                    $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
                     // Display formatted JSON with syntax highlighting
                     $('#ocrResult').html('<strong>OCR Result:</strong><br><pre><code class="json">' + JSON.stringify(JSON.parse(data.ocr_response), null, 2) + '</code></pre>');
 
@@ -135,13 +104,6 @@
                     hljs.highlightAll();
                 },
                 error: function(error) {
-                    // Hide loading spinner
-                    spinner.stop();
-                    $('#loadingSpinner').hide();
-
-                    // Enable the button
-                    $('#uploadButton').prop('disabled', false);
-
                     console.log(error);
                     $('#ocrResult').html('<p>Error processing the receipt.</p>');
                 }

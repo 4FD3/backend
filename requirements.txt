@@ -3,5 +3,5 @@ uvicorn
 gunicorn
 jinja2
 python-multipart
-pytesseract
 opencv-python
+easyocr
