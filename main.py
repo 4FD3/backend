@@ -11,6 +11,8 @@ import cv2
 import re
 import easyocr
 import json
+from fastapi.concurrency import run_in_threadpool
+
 
 app = FastAPI()
 
@@ -43,8 +45,18 @@ async def process_receipt(file: UploadFile = UploadFile(...)):
         total_pattern = re.compile(r'TOTAL', re.IGNORECASE)  # Matches the word "TOTAL" (case-insensitive)
 
         #easyOCR
-        reader = easyocr.Reader(['en'], gpu=False)
-        results = reader.readtext(image_to_ocr)
+
+        # Define a synchronous function for OCR
+        def perform_ocr(image_path):
+            # Perform OCR using easyOCR
+            reader = easyocr.Reader(['en'], gpu=False)
+            results = reader.readtext(image_path)
+            return results
+        
+        # Run the OCR function in a separate threadpool
+        results = await run_in_threadpool(perform_ocr, image_path)
+        #reader = easyocr.Reader(['en'], gpu=False)
+        #results = reader.readtext(image_to_ocr)
 
         extracted_text = [result[1] for result in results]
 
@@ -113,7 +125,7 @@ async def process_receipt(file: UploadFile = UploadFile(...)):
         # Convert the result dictionary to a JSON object
         result_json = json.dumps(result_dict, indent=1)
         return JSONResponse(content={"ocr_response": result_json}, status_code=200)
-	#return FileResponse("templates/index.html", media_type="text/html", headers={"ocr_response": result_json})
+        #return FileResponse("templates/index.html", media_type="text/html", headers={"ocr_response": result_json})
 
         #return JSONResponse(content={"ocr_response": result_json}, status_code=200)
         
