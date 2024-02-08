@@ -24,7 +24,8 @@ apt-get install -y tesseract-ocr && apt-get install -y libgl1-mesa-glx
 ### Start the application
 
 `uvicorn main:app --reload`
-
+OR
+`gunicorn main:app -c gunicorn.conf.py`
 ## Example call to access the application on:
 
 ### browser:
