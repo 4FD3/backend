@@ -8,9 +8,9 @@ Tools/languages/libraries:
 
 # Local Testing on Docker [1st way]
 
-docker build --tag fastapi-ocr-intelli .
+`docker build --tag fastapi-ocr-intelli .`
 
-docker run --detach --publish 3100:3100 fastapi-ocr-intelli
+`docker run --detach --publish 3100:3100 fastapi-ocr-intelli`
 
 
 # Local Testing without Docker [2nd way]
