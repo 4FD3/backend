@@ -19,6 +19,7 @@
         .container {
             max-width: 600px;
             margin-top: 50px;
+            position: relative; /* Ensure relative positioning for containing the spinner and result */
         }
 
         .form-container {
@@ -56,6 +57,8 @@
             border-radius: 5px;
             padding: 10px;
             margin-top: 20px;
+            position: relative; /* Relative positioning for the spinner and result */
+            z-index: 1; /* Ensure result is on top of spinner */
         }
 
         /* Style for the loading spinner */
@@ -65,6 +68,43 @@
             left: 50%;
             transform: translate(-50%, -50%);
             display: none; /* Initially hidden */
+            z-index: 2; /* Ensure spinner is on top of result */
+        }
+
+        /* Gallery styles */
+        .image-gallery {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+	    
+        }
+
+        .image-container {
+            width: 150px; /* Fixed width for the image container */
+            height: 150px; /* Fixed height for the image container */
+            border: 2px dashed #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden; /* Hide overflowing content */
+        }
+
+        .image-preview {
+            max-width: 100%; /* Ensure image doesn't exceed container width */
+            max-height: 100%; /* Ensure image doesn't exceed container height */
+        }
+
+        .gallery-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+	    font-size: 16px;	
+        }
+
+        .gallery-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
@@ -73,9 +113,31 @@
         <div class="form-container">
             <h2 class="mb-4">Receipt OCR Upload</h2>
 
+            <!-- Title for gallery -->
+            <h3 class="gallery-title">Click on any one of the below Sample Receipts to process:</h3>
+
+            <!-- Gallery for images -->
+            <div class="image-gallery">
+                <div class="image-container" onclick="submitImg('./static/images/img1.jpg')">
+                    <img src="./static/images/img1.jpg" alt="Image 1" class="image-preview">
+                </div>
+                <div class="image-container" onclick="submitImg('./static/images/img2.jpg')">
+                    <img src="./static/images/img2.jpg" alt="Image 2" class="image-preview">
+                </div>
+                <div class="image-container" onclick="submitImg('./static/images/img3.jpg')">
+                    <img src="./static/images/img3.jpg" alt="Image 3" class="image-preview">
+                </div>
+                <div class="image-container" onclick="submitImg('./static/images/img4.jpg')">
+                    <img src="./static/images/img4.jpg" alt="Image 4" class="image-preview">
+                </div>
+            </div>
+	    
+            <img id="previewImage" src="#" alt="Preview Image" style="max-width: 100%; display: none;">
+            <!-- URL for the OCR API - http://0.0.0.0:8000/process_receipt   -->
+            <!-- URL for the OCR API - http://privateIP:8000/process_receipt -->
             <form id="ocrForm" action="https://ocr.ishananand.ca/process_receipt" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="file" class="form-label">Choose a Receipt from any Grocery/Retail store:</label>
+                    <label for="file" class="gallery-label">Click or Choose a Receipt from any Grocery/Retail store:</label>
                     <input type="file" id="file" name="file" class="form-control" accept="image/*" required>
                 </div>
 
@@ -103,6 +165,64 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
+        function submitImg(imageSrc) {
+            // Disable the button
+            $('#uploadButton').prop('disabled', true);
+
+            // Display loading spinner
+            var target = document.getElementById('loadingSpinner');
+            var spinner = new Spinner().spin(target);
+            $('#loadingSpinner').show();
+
+            // Create a new FormData object
+            var formData = new FormData();
+
+            // Fetch the image file based on the image source
+            fetch(imageSrc)
+                .then(response => response.blob())
+                .then(blob => {
+                    // Append the image file to the FormData object
+                    formData.append('file', blob, 'image.jpg');
+
+                    // Perform AJAX request to submit the form data
+                    $.ajax({
+                        // URL for the OCR API - http://0.0.0.0:8000/process_receipt
+                        // URL for the OCR API - http://privateIP:8000/process_receipt
+                        url: 'https://ocr.ishananand.ca/process_receipt',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            // Hide loading spinner
+                            spinner.stop();
+                            $('#loadingSpinner').hide();
+
+                            // Enable the button
+                            $('#uploadButton').prop('disabled', false);
+
+                            // Display formatted JSON with syntax highlighting
+                            $('#ocrResult').html('<strong>OCR Result:</strong><br><pre><code class="json">' + JSON.stringify(JSON.parse(data.ocr_response), null, 2) + '</code></pre>');
+
+                            // Apply syntax highlighting
+                            hljs.highlightAll();
+                        },
+                        error: function(error) {
+                            // Hide loading spinner
+                            spinner.stop();
+                            $('#loadingSpinner').hide();
+
+                            // Enable the button
+                            $('#uploadButton').prop('disabled', false);
+
+                            console.log(error);
+                            $('#ocrResult').html('<p>Error processing the receipt.</p>');
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching image:', error));
+        }
+
         function submitForm() {
             // Disable the button
             $('#uploadButton').prop('disabled', true);
@@ -115,6 +235,8 @@
             var formData = new FormData($('#ocrForm')[0]);
 
             $.ajax({
+                // URL for the OCR API - http://0.0.0.0:8000/process_receipt
+                // URL for the OCR API - http://privateIP:8000/process_receipt
                 url: 'https://ocr.ishananand.ca/process_receipt',
                 type: 'POST',
                 data: formData,
